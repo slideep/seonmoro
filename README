@@ -1,0 +1,28 @@
+SeOnMoro
+===============================================================================
+http://seonmoro.com
+
+This 'application' provides a mechanism for pulling last minute flight/holiday offers
+from multiple Finnish travel agencies.
+
+Amadeus API for developing a travel portal website
+
+The site has an interface for communicating with plethora of sites and
+last minute deals are gathered and shown to user in a smart, simple
+view.
+
+After choosing a deal that user likes, she will be redirected onto travel agency's site
+for the booking process.
+
+When, where, one or two weeks, how much? Book.
+
+- Aurinkomatkat
+-
+
+
+Ruby
+REST (XML, JSON)
+MongoDB
+Node.js
+jQuery Mobile
+HTML5, CSS3

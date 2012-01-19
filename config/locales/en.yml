@@ -1,0 +1,12 @@
+en:
+    hostname_is_missing: "A hostname has to be provided."
+    scraper_url_missing: "A scraper url has to be provided."
+    scraper_url_missing_from_registry: "A valid URL has to be provided for finding a scraper from registry."
+    scraper_domain_name_missing: "A domain name cannot be empty or nil."
+    hash_of_options_missing: "A valid hash of options is needed."
+    db_instance_nil: "A database cannot be nil."
+    collection_name_missing: "A valid name for the collection has to be provided."
+    db_authentication_success: "Successfully authenticated! Preparing to fetch collection."
+    db_collection_name_missing: "A named collection must be provided."
+    db_authentication_error: "A database must be active and authenticated with default credentials."
+    feed_url_is_missing: "At least one valid feed has to be provided."
