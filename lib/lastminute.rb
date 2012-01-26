@@ -1,10 +1,14 @@
 # app/lastminute.rb
 
 begin
-  require 'rubygems'
   require 'mongo'
   require 'logger'
+  require 'tempfile'
   require 'gettext'
+  require 'digest/md5'
+  require 'ostruct'
+
+  require File.dirname(__FILE__) + '/../lib/lastminute_error'
 end
 
 module LastMinute
@@ -27,6 +31,11 @@ module LastMinute
 
       MAX_TRIES = 5
 
+      # Constants for field names
+      COL_DEPARTURE_DATE = 'Lahto'
+      COL_DEPARTURE_CITY = 'Lahtopaikka'
+      COL_COST = 'Hinta'
+
       attr_accessor :collection_name
       attr_accessor :collection
 
@@ -39,9 +48,7 @@ module LastMinute
         if host == nil
           raise ArgumentError, 'A hostname has to be provided.'
         end
-
         tries = 0
-
         begin
           tries += 1
           @db = Mongo::Connection.new(host, port).db(db_name)
@@ -83,14 +90,34 @@ module LastMinute
       # @return [Time]
       def last_update
         updated_on_key = "UpdatedOn"
-        if @collection != nil
-          begin
-            doc = @collection.find_one()
-            if (doc != nil)
-              return doc[updated_on_key]
-            end
-          end
+        begin
+          doc = @collection.find_one
+          return doc[updated_on_key] if (doc != nil)
+        end if @collection != nil
+      end
+
+      # @param earliest [String]
+      # @param cost [Integer]
+      # @return [OpenStruct]
+      def find_deals(earliest, cost = nil)
+        deals = {}
+
+        response = OpenStruct.new
+        cursor = @collection.find({"Lahto" => {"$gte" => earliest}, "Hinta" => {"$lte" => cost}})
+        cursor.each do |doc|
+
+          response.lahto = doc[COL_DEPARTURE_DATE]
+          response.hinta = doc["Hinta"]
+          response.lisatty = doc["Lisatty"]
+          response.matkakohde = doc["Matkakohde"]
+          response.lahtopaikka = doc[COL_DEPARTURE_CITY]
+          response.kesto = doc["Kesto"]
+          response.varauslinkki = doc["Varauslinkki"]
+
+          deals << response
         end
+
+        deals
       end
 
       # Returns the size of the collection
@@ -98,7 +125,7 @@ module LastMinute
       def size
         @collection.count
       end
-      
+
       # Iterates over collection
       # @return [Object]
       def each

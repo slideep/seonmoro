@@ -8,7 +8,7 @@ class ScraperUtils
     PATH_SPLIT_RE = /\//
   end
 
-  def path_to_uri(file_path)
+  def self.path_to_uri(file_path)
     unless file_path.nil?
       result = 'file://'
       segments = file_path.split PATH_SPLIT_RE
@@ -26,21 +26,16 @@ class ScraperUtils
     end
   end
 
-  def normalize_path(path)
+  def self.normalize_path(path)
     Pathname.new(path).expand_path.to_s
   end
 
   private
 
-  def escape_segment(string)
+  def self.escape_segment(string)
     string.gsub(/([^a-zA-Z0-9_.:-]+)/n) do
       '%' + $1.unpack('H2' * $1.size).join('%').upcase
     end
   end
 
 end
-
-napsu_url = 'C:\tmp\napsu-akkilahdot.html'
-
-utils = ScraperUtils.new
-puts utils.path_to_uri(napsu_url)

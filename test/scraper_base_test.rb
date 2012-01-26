@@ -18,7 +18,6 @@ class ScraperBaseTest < Test::Unit::TestCase
     is_authenticated = @db.authenticate(DB_NAME, DB_NAME)
     if is_authenticated
       @lm = LastMinute::Storage::MongoDB.new(@db, DB_COL_NAME, DB_NAME)
-
       conf_file = File.join(File.dirname(__FILE__), 'env.yml')
       if File.exist?(conf_file)
         env = YAML.load_file(File.join(File.dirname(__FILE__), 'env.yml'))

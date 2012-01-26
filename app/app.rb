@@ -70,10 +70,3 @@ class App
     end
   end
 end
-
-@app = App.new
-unless @app.is_authenticated
-  @app.load_configuration
-  @app.authenticate(@app.host, @app.port, @app.db_name)
-  @app.process @app.db, 'detur', @app.is_authenticated
-end
