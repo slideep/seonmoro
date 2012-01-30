@@ -1,0 +1,130 @@
+!!! 5
+%html{:lang => "fi"}
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:name => "viewport", :content => "width=device-width, initial-scale=1"}/
+    %meta{:name => "format-detection", :content => "telephone=no"}
+    %meta{:name => "robots", :content => "noindex"}
+    %link{:rel => "stylesheet", :href => "http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css"}/
+    %script{:src => "http://code.jquery.com/jquery-1.6.4.min.js"}
+    %script{:src => "http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"}
+    %title SeOnMoro!
+  %body
+    %div{:data => {:role => "page", :title => "Äkkilähdöt"}}
+      %div{:data => {:role => "header", :position => "inline", :theme => "c"}}
+        %h1
+          SeOnMoro :: Akkilähtöjä #{@last_minute_count} kpl
+        %a{:href => "#", :class => "ui-btn-right", :data => {:icon => "save"}}
+          Tallenna
+      %div{:data => {:role => "content"}}
+        %p
+          Tämä haku: #{@last_minute_airport}
+          %br/
+          Päivitetty: #{Time.now}
+        %p
+          Voit etsiä ja järjestää äkkilähtöjä päivämäärän,
+          matkakohteen, kohteen pituuden tai hinnan mukaan.
+        #last-minute-filters
+          %fieldset{:data => {:role => "controlgroup", :type => "horizontal"}}
+            %table.specify-filters{:cellspacing => "0"}
+              %thead
+                %tr
+                  %th
+                    %label Lähtöpaikka:
+                  %th
+                    %label Lajittele:
+                  %th
+                    %label Matkan pituus:
+                  %th
+                    %label Matkavaihtoehto:
+                  %th
+                    %label Matkakohde:
+              %tbody
+                %tr
+                  %td
+                    / journey-airport-selector - l&amp;#228;ht&amp;#246;paikkakunta
+                    #journey-airport-selector
+                      %select{:name => "selectAirport"}
+                        %option{:selected => "", :value => "hel"} Helsinki
+                        %option{:value => "tku"} Turku
+                        %option{:value => "oul"} Oulu
+                        %option{:value => "kuo"} Kuopio
+                        %option{:value => "tre"} Tampere
+                        %option{:value => "vaa"} Vaasa
+                  %td
+                    / journey-sortby-selector - lajittelukriteeri
+                    #journey-sortby-selector
+                      %select{:name => "selectSortBy"}
+                        %option{:selected => "", :value => "1"} Päivämäärä
+                        %option{:value => "2"} Matkakohde
+                        %option{:value => "3"} Matkan tyyppi
+                        %option{:value => "4"} Matkan pituus
+                        %option{:value => "5"} Hinta
+                  %td
+                    / journey-length-selector - matkan pituus
+                    #journey-length-selector
+                      %select{:name => "selectJourneyLength"}
+                        %option{:selected => "", :value => "1"} Kaikki
+                        %option{:value => "2"} 1 viikko
+                        %option{:value => "3"} 2 viikkoa
+                  %td
+                    / journey-type-selector - matkan tyyppi
+                    #journey-type-selector
+                      %select{:name => "selectJourneyType"}
+                        %option{:selected => "", :value => "1"} Pelkkä lento
+                        %option{:value => "2"} Määrittelemätön majoitus
+                        %option{:value => "3"} Määritelty majoitus
+                  %td
+                    / journey-destination-selector - matkakohde
+                    #journey-destination-selector
+                      %select{:name => "selectJourneyDestination"}
+                        - i = 0
+                        - fetch_destinations.each do |destination|
+                          - i += 1
+                          - journey_destination = "journeyDestination_" + i.to_s
+                          %option{:value => journey_destination}= destination['Kohde']
+          / filter-search-action - hae action
+          #filter-search-action
+            %a{:href => "#", :data => {:role => "button", :icon => "search"}}
+              %span &raquo; Hae
+        #last-minute-top &nbsp;
+        %table{:border => "0", :cellpadding => "1", :cellspacing => "0"}
+          %thead
+            %tr
+              %th
+                %a
+                  %span Lisätty
+              %th
+                %a
+                  %span Lähtö
+              %th
+                %a
+                  %span Matkanjärjestäjä
+              %th
+                %a
+                  %span Matkakohde
+              %th
+                %a
+                  %span Lähtöpaikka
+              %th
+                %a
+                  %span Hinta
+              %th
+                %a
+                  %span Kesto
+          - @trips.each do |destination|
+            %tr
+              %td= destination['Lisatty']
+              %td= destination['Lahto']
+              %td= destination['Matkanjarjestaja']
+              %td= destination['Matkakohde']
+              %td= destination['Lahtopaikka']
+              %td
+                = destination['Hinta']
+                \&euro;
+              %td= destination['Kesto']
+              - varauslinkki = create_href(destination['Varauslinkki'])
+              %td= varauslinkki
+      %div{:data => {:role => "footer", :theme => "c"}}
+        %p
+          SeOnMoro &copy; 2012

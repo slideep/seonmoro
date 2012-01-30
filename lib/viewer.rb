@@ -28,10 +28,6 @@ get '/' do
   erb :matkakohteet
 end
 
-post '/' do
-  params
-end
-
 # create reservation link
 def create_href(link)
   "<a href=\"#{link}\" rel=\"nofollow\" target=\"_blank\"> <strong>&raquo; Varaa</strong></a>"
@@ -69,5 +65,5 @@ get '/akkilahdot/:lahtopaikka' do |origin|
 
   fetch_trips(origin)
 
-  erb :matkakohteet
+  haml :matkakohteet
 end
