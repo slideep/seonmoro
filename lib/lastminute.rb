@@ -32,9 +32,12 @@ module LastMinute
       MAX_TRIES = 5
 
       # Constants for field names
+      COL_ADDED = 'Lisatty'
+      COL_DESTINATION = 'Matkakohde'
       COL_DEPARTURE_DATE = 'Lahto'
       COL_DEPARTURE_CITY = 'Lahtopaikka'
       COL_COST = 'Hinta'
+      COL_DURATION = 'Kesto'
 
       attr_accessor :collection_name
       attr_accessor :collection
@@ -107,11 +110,11 @@ module LastMinute
         cursor.each do |doc|
 
           response.lahto = doc[COL_DEPARTURE_DATE]
-          response.hinta = doc["Hinta"]
-          response.lisatty = doc["Lisatty"]
-          response.matkakohde = doc["Matkakohde"]
+          response.hinta = doc[COL_COST]
+          response.lisatty = doc[COL_ADDED]
+          response.matkakohde = doc[COL_DESTINATION]
           response.lahtopaikka = doc[COL_DEPARTURE_CITY]
-          response.kesto = doc["Kesto"]
+          response.kesto = doc[COL_DURATION]
           response.varauslinkki = doc["Varauslinkki"]
 
           deals << response
