@@ -1,6 +1,6 @@
 ---
-:consumer_key: 73DU4BRB6DaXwgru1Z7d4w
-:consumer_secret: iY5IcWEmIwd5wwMQx1wHCzrL8a71Jz6cuT7z72haDGc
-:token: 456502756-GXKMKtdnVWUlJfpoETWsKVs0D3VTNzebQR8EXoDY
-:secret: VD5te0K66DNRfcnRlX4CkFeeY050gvzhMyp8fdPlA
-:since_id: 162174029673938945
+:consumer_key: key
+:consumer_secret: secret
+:token: token
+:secret: secret
+:since_id: 1
