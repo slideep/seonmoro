@@ -20,7 +20,17 @@ MongoProvider = function() {
 MongoProvider.prototype.getAirportsCollection = function(callback) {
   console.log("Enter:getAirportsCollection");
   
-  this.db.collection('airports', callback);
+  // this.db.collection('airports', callback);
+  this.db.collection('airports', function(error, airport_collection){
+    db.find({}, function(err, cursor){
+      cursor.forEach(function(err,doc){
+        if(doc != null){
+          console.log("iterating cursor...");
+        }
+      });
+    });
+    // callback(error, airport_collection);
+  });
 
   console.log("Exit:getAirportsCollection");
 };
@@ -29,13 +39,14 @@ MongoProvider.prototype.getAirports = function(callback) {
   console.log("Enter:getAirports");
 
   this.getAirportsCollection(function(error, collection){
-      console.log("Collection callback");
-      console.log("Error: " + error);
 
-    // collection.find().toArray(function(error, results){
-    //   console.log("toArray callback")
-    //   callback(results);
-    // });
+    console.log("Enter: collection callback");
+    debugger;
+    collection.find().toArray(function(error, results){
+      console.log("toArray callback");
+      callback(results);
+    });
+    console.log("Exit: collection callback")
 
   });
   console.log("Exit:getAirports")
