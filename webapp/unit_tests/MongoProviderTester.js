@@ -1,21 +1,20 @@
-var MongoProvider = require('../DAL/MongoProvider.js').MongoProvider;
+var offerProvider = require('../lib/OfferProvider').OfferProvider;
 
-exports["Get all orders"] = function(test)
+
+/*
+	Test to ensure that offers are returned via the OfferProvider GetOffers method
+*/
+exports["Get offers successfully"] = function(test)
 {
-	console.log("this is a first test run..");
+	var provider = new OfferProvider();
 
-	var provider = new MongoProvider();
+	provider.GetOffers(function(offers){
+		test.expect(1);
+		test.ok(offers.length > 0, "Number of offers: " + offers.length);
 
-	provider.getAirports(function(airports){
-		
-		console.log("callback called from getAirports");
-		for(var i=0; i<airports.length; i++)
-		{
-			console.log(i + " --> " + airports[i]);
-		}
+		var offer = offers[0];
+		console.log(offer);
 
-	test.done();
+		test.done();
 	});
-
-	// console.log("Ending test");
 }
