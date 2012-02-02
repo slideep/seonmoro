@@ -1,0 +1,134 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>SeOnMoro!</title>
+</head>
+<body>
+
+<h1>SeOnMoro! :: Akkil&#228;ht&#246;j&#228; <%= @last_minute_count %> kpl</h1>
+
+<p>
+  T&#228;m&#228; haku: <%= @last_minute_airport %> <br/>
+  P&#228;ivitetty: <%= Time.now %>
+</p>
+
+<p>
+  Voit etsi&#228; ja j&#228;rjest&#228;&#228; &#228;kkil&#228;ht&#246;j&#228; p&#228;iv&#228;m&#228;&#228;r&#228;n,
+  matkakohteen, kohteen pituuden tai hinnan mukaan.
+</p>
+
+<div id="last-minute-filters">
+
+  <table class="specify-filters" cellspacing="0">
+    <thead>
+    <tr>
+      <th><label>L&#228;ht&#246;paikka:</label></th>
+      <th><label>Lajittele:</label></th>
+      <th><label>Matkan pituus:</label></th>
+      <th><label>Matkavaihtoehto:</label></th>
+      <th><label>Matkakohde:</label></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>
+        <!-- journey-airport-selector - l&#228;ht&#246;paikkakunta -->
+        <div id="journey-airport-selector">
+          <select name="selectAirport">
+            <option value="hel" selected>Helsinki</option>
+            <option value="tku">Turku</option>
+            <option value="oul">Oulu</option>
+            <option value="kuo">Kuopio</option>
+            <option value="tre">Tampere</option>
+            <option value="vaa">Vaasa</option>
+          </select>
+        </div>
+      </td>
+      <td>
+        <!-- journey-sortby-selector - lajittelukriteeri -->
+        <div id="journey-sortby-selector">
+          <select name="selectSortBy">
+            <option value="1" selected>P&#228;iv&#228;m&#228;&#228;r&#228;</option>
+            <option value="2">Matkakohde</option>
+            <option value="3">Matkan tyyppi</option>
+            <option value="4">Matkan pituus</option>
+            <option value="5">Hinta</option>
+          </select>
+        </div>
+      </td>
+      <td>
+        <!-- journey-length-selector - matkan pituus -->
+        <div id="journey-length-selector">
+          <select name="selectJourneyLength">
+            <option value="1" selected>Kaikki</option>
+            <option value="2">1 viikko</option>
+            <option value="3">2 viikkoa</option>
+          </select>
+        </div>
+      </td>
+      <td>
+        <!-- journey-type-selector - matkan tyyppi -->
+        <div id="journey-type-selector">
+          <select name="selectJourneyType">
+            <option value="1" selected="">Pelkk&#228; lento</option>
+            <option value="2">M&#228;&#228;rittelem&#228;t&#246;n majoitus</option>
+            <option value="3">M&#228;&#228;ritelty majoitus</option>
+          </select>
+        </div>
+      </td>
+      <td>
+        <!-- journey-destination-selector - matkakohde  -->
+        <div id="journey-destination-selector">
+          <select name="selectJourneyDestination">
+            <% i = 0 %>
+            <% fetch_destinations.each do |destination| %>
+                <% i += 1
+                   journey_destination = "journeyDestination_" + i.to_s
+                %>
+                <option value="<%= journey_destination %>"><%= destination['Kohde'] %></option>
+            <% end %>
+          </select>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- filter-search-action - hae action -->
+  <div id="filter-search-action"><a href="#"><span>&raquo; Hae</span></a></div>
+</div>
+
+<div id="last-minute-top">&nbsp;</div>
+
+<table border="0" cellspacing="0" cellpadding="1">
+  <thead>
+  <tr>
+    <th><a><span>Lis&#228;tty</span></a></th>
+    <th><a><span>L&#228;ht&#246;</span></a></th>
+    <th><a><span>Matkanj&#228;rjest&#228;j&#228;</span></a></th>
+    <th><a><span>Matkakohde</span></a></th>
+    <th><a><span>L&#228;ht&#246;paikka</span></a></th>
+    <th><a><span>Hinta</span></a></th>
+    <th><a><span>Kesto</span></a></th>
+  </tr>
+  </thead>
+  <% @trips.each do |destination| %>
+      <tr>
+        <td><%= destination['Lisatty'] %></td>
+        <td><%= destination['Lahto'] %></td>
+        <td><%= destination['Matkanjarjestaja'] %></td>
+        <td><%= destination['Matkakohde'] %></td>
+        <td><%= destination['Lahtopaikka'] %></td>
+        <td><%= destination['Hinta'] %> &euro;</td>
+        <td><%= destination['Kesto'] %></td>
+
+        <%
+           varauslinkki = create_href(destination['Varauslinkki'])
+        %>
+
+        <td><%= varauslinkki %></td>
+      </tr>
+  <% end %>
+</table>
+</body>
+</html>

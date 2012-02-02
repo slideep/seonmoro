@@ -1,8 +1,7 @@
   # test/lastminute_test.rb
-  
-  require File.join(File.dirname(__FILE__), '..', 'lastminute')
-  require File.join(File.dirname(__FILE__), '..', 'detur_scraper')
-  
+
+  require File.dirname(__FILE__) + '/../lib/lastminute'
+  require File.dirname(__FILE__) + '/../lib/detur_scraper'
   require 'test/unit'
   
   class LastMinuteTest < Test::Unit::TestCase

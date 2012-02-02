@@ -7,19 +7,16 @@ require 'net/http'
 require 'logger'
 require 'active_support'
 
-
 $LOG = Logger.new($stdout)
 
 class CurlWorker
 
-  @attr_accessor = :has_to_cache
-  @attr_reader = :cache_time
-  @attr_accessor = :cache_store
-  @attr_accessor = :feed_urls
+  attr_reader = :has_to_cache, :cache_time
+  attr_accessor = :cache_store, :feed_urls
 
   def initialize(urls, cache)
     @feed_urls = urls
-    @cache = cache
+    @has_to_cache = cache
     @cache_time = Time.now
   end
 
@@ -28,7 +25,6 @@ class CurlWorker
       abort "Can not find config file at #{config_file}"
     end
 
-
   end
 
   def self.parse_feeds(feed_urls = nil)
@@ -36,9 +32,6 @@ class CurlWorker
     feed_urls.each_pair do |feed_name, feed_url|
       begin
         with_logging(feed_url) do
-
-
-
           feed = CURL.new({:has_to_cache => true})
           feed.save(feed_url, to_filename(feed_name))
         end if feed_url.start_with?("http")
@@ -51,21 +44,19 @@ class CurlWorker
   end
 
   def self.to_filename(feed_name)
-    file_name = File.dirname(__FILE__) + '/../samples/' + feed_name.to_s unless feed_name.nil?
+    File.dirname(__FILE__) + '/../samples/' + feed_name.to_s unless feed_name.nil?
   end
 
   private
 
-  def self.cache_file(file_name, cache_path, has_to_cache)
+  def cache_file(file_name, cache_path)
     cache_time = File.ctime(file_name).localtime
-    if has_to_cache
-      if File.exist?(file_name) && cache_time > Time.now - cache_time
-        file_store = ActiveSupport::Cache.lookup_store(:file_store, cache_path)
-      end
-    end
+    if File.exist?(file_name) && cache_time > Time.now - cache_time
+      file_store = ActiveSupport::Cache.lookup_store(:file_store, cache_path)
+    end if @has_to_cache
   end
 
-  def self.with_logging(feed)
+  def with_logging(feed)
     begin
       $LOG.info("Fetching and saving feed #{feed} as a static file.")
       yield
@@ -88,6 +79,6 @@ feed_urls =
     }
 
 curl = CurlWorker.new(feed_urls, true)
-CurlWorker.parse_feeds(feed_urls)
 
+CurlWorker.parse_feeds(feed_urls)
 CurlWorker.cache_file(__FILE__, 'c:\\tmp', true)

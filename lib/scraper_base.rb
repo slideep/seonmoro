@@ -7,10 +7,15 @@ begin
   require 'hpricot'
   require 'yaml'
   require 'open-uri'
+
+  require File.dirname(__FILE__) + '/../lib/scraper_utils'
 end
 
 # Base class for last minute deals scrapers
 class ScraperBase
+
+  # Periodic interval schedule (30 mins)
+  UPDATE_SCHEDULE = 1800
 
   # URL for the scraper to use
   attr_reader :url
@@ -37,18 +42,18 @@ class ScraperBase
   def find_scraper(url)
     raise ArgumentError, t('scraper_url_missing_from_registry') if url == nil
 
-    @registry.find { |domain, scraper| url.include?(domain) }
+    @registry.find { |url, scraper| url.include?(domain) }
   end
 
   # Registers given domain as a new scraper (with URL)
-  def register_scraper(domain)
-    raise ArgumentError, t('scraper_domain_name_missing') if domain == nil
-
-    unless (url =~ URI::regexp).nil?
+  def register_scraper(url)
+    raise ArgumentError, t('scraper_domain_name_missing') if url == nil
+   unless (url =~ URI::regexp).nil?
       # Correct URL, create registry if needed
       @registry ||= {}
-      @registry[URI.parse(domain).host] = self
+      @registry[URI.parse(url).host] = self
     end
+
   end
 
   # Scrape specified URL's document
