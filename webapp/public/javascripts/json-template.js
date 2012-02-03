@@ -873,5 +873,3 @@ return {
     };
 
 }();
-
-export.Template = Template;

@@ -51,10 +51,20 @@
 // });
   
 
-var offerProvider = require('../lib/OfferProvider').OfferProvider;
+// var offerProvider = require('../lib/OfferProvider').OfferProvider;
 
-var provider = new OfferProvider();
-provider.GetOffers(function(offers){
-	for(var i=0; i<offers.length; i++)
-		console.log(offers[0]);
-})
+// var provider = new OfferProvider();
+// provider.GetOffers(function(offers){
+// 	for(var i=0; i<offers.length; i++)
+// 		console.log(offers[0]);
+// })
+
+var template = require('../public/javascripts/json-template');
+
+var data = {
+	name:"This_is_my_name"
+}
+
+var tmpl = "Data -> {name}";
+
+console.log(JSON.stringify(data));
