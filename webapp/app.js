@@ -5,6 +5,7 @@
 
 var express = require('express')
   , routes = require('./routes')
+  , offerProvider = require('./lib/OfferProvider')
 
 var app = module.exports = express.createServer();
 
@@ -12,7 +13,7 @@ var app = module.exports = express.createServer();
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
-  app.set('view engine', '-c');
+  app.set('view engine', 'jade');
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
@@ -53,6 +54,18 @@ app.get('/people.json', function(request, response) {
   // Now, we can use the response object's send method to push that string
   //  of people JSON back to the browser in response to this request:
   response.send(peopleJSON);
+});
+
+app.get('/main', routes.main);
+
+app.get('/offers.json', function(request, response){
+  response.contentType('application/json');
+  var provider = new OfferProvider();
+
+  provider.GetOffers(function(result){
+    response.send(result);
+  });
+
 });
 
 app.listen(3000);

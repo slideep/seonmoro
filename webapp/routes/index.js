@@ -1,8 +1,16 @@
+var offerProvider = require('../lib/OfferProvider');
 
 /*
  * GET home page.
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Express' })
+  res.render('index', { title: 'Express', layout: false })
+};
+
+exports.main = function(req, res){
+	var provider = new OfferProvider();
+	provider.GetOffers(function(result){
+		res.render('main', {offers: result, layout: false});
+	});
 };

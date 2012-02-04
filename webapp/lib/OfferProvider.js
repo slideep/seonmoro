@@ -10,8 +10,9 @@ OfferProvider = function(){
 	this.collectionName = config.collectionOffers;
 };
 
+
 OfferProvider.prototype.GetOffers = function(callback, filter) {
-	debugger;
+
 	if(!filter)
 		filter = {};
 
