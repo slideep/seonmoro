@@ -1,1 +1,16 @@
+script
+	$(document).ready(function(){
+		AddOffers(!{JSON.stringify(offers)});
+		// - var str = #{JSON.stringify(offers)}
+		// #{console.log(JSON.stringify(offers))}
+		alert("#{test}");
+	});
+
 p This is the main page - number of offers #{offers.length}
+
+div#offerContainer
+// - Javascript logic for adding new offers
+// - Place offers object in javascript logic
+// - import jquery library
+// - import templating library
+// - defeine template that consumes each json instance of offers

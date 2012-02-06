@@ -1,1 +1,22 @@
-p Welcome to Hell
+!!!
+html
+	head
+		title SeOnMoro		
+		script(src='./javascripts/jquery-1.7.1.min.js')
+		script(src='./javascripts/json-template.js')
+		script
+			function AddOffers(offers)
+			{
+				if(!offers)
+					return;
+				
+				var offerTemplate = "<div>Offer: {UpdatedOn}</div>";
+
+				for(var i=0; i<offers.length; i++)
+				{
+					var offerHtml = jsontemplate.expand(offerTemplate, offers[i]);
+					$('#offerContainer').append(offerHtml);
+				}
+			}
+	body
+		!= body
