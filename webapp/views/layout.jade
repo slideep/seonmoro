@@ -1,16 +1,23 @@
 !!!
 html
 	head
-		title SeOnMoro		
+		title SeOnMoro
+		link(href='./stylesheets/seonmoro.css', rel='stylesheet', type='text/css')
 		script(src='./javascripts/jquery-1.7.1.min.js')
 		script(src='./javascripts/json-template.js')
+		script(src='./javascripts/jquery.qtip-1.0.0-rc3.min.js')
 		script
 			function AddOffers(offers)
 			{
 				if(!offers)
 					return;
 				
-				var offerTemplate = "<div>Offer: {UpdatedOn}</div>";
+				// var offerTemplate = "<div class='offer'><div class='info'/> Offer: {UpdatedOn}</div>";
+				var offerTemplate = [	"<div class='offer'>",
+										"<div class='info'>",
+										"<img class='infoImg' src=./images/info.png>",
+										"</div>",
+										"Offer: {UpdatedOn}</div>"].join('');
 
 				for(var i=0; i<offers.length; i++)
 				{

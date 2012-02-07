@@ -6,6 +6,7 @@
 var express = require('express')
   , routes = require('./routes')
   , offerProvider = require('./lib/OfferProvider')
+  , stylus = require('stylus')
 
 var app = module.exports = express.createServer();
 
@@ -31,7 +32,6 @@ app.configure('production', function(){
 });
 
 app.helpers({
-  test: String("this_is_a_test_variable"),
   JSON: JSON,
   console: console
 })
@@ -48,8 +48,11 @@ app.get('/offers.json', function(request, response){
   provider.GetOffers(function(result){
     response.send(result);
   });
-
 });
+
+app.get('/destinationdetails.json', function(request, response){
+  // Destination ID
+})
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
