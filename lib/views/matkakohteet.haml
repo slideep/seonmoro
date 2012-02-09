@@ -14,8 +14,8 @@
       %div{:data => {:role => "header", :position => "inline", :theme => "c"}}
         %h1
           SeOnMoro :: Akkilähtöjä #{@last_minute_count} kpl
-        %a{:href => "#", :class => "ui-btn-right", :data => {:icon => "save"}}
-          Tallenna
+        %a{:href => "/akkilahdot/halytys", :class => "ui-btn-right", :data => {:icon => "save", :rel => "dialog"}}
+          Lisää hälytys
       %div{:data => {:role => "content"}}
         %p
           Tämä haku: #{@last_minute_airport}
@@ -88,7 +88,7 @@
             %a{:href => "#", :data => {:role => "button", :icon => "search"}}
               %span &raquo; Hae
         #last-minute-top &nbsp;
-        %table{:border => "0", :cellpadding => "1", :cellspacing => "0"}
+        %table{:border => "0", :cellpadding => "2", :cellspacing => "1"}
           %thead
             %tr
               %th
@@ -127,4 +127,10 @@
               %td= varauslinkki
       %div{:data => {:role => "footer", :theme => "c"}}
         %p
-          SeOnMoro &copy; 2012
+          SeOnMoro &copy; 2012 + Seuraa meitä Twitterissä
+          %a{:href => "https://twitter.com/SeOnMoro", :data => {:role => "link", :icon => "search"}}
+            %img{:src => "../resources/twitter.png", :border => "0"}/
+            @SeOnMoro
+          ja
+          %a{:href => "http://www.facebook.com/seonmoro", :data => {:role => "link", :icon => "search"}}
+            Facebookissa

@@ -1,18 +1,20 @@
 # scraper_base.rb
 
 begin
-  require 'rubygems'
   require 'net/http'
   require 'uri'
+  require 'nokogiri'
   require 'hpricot'
   require 'yaml'
   require 'open-uri'
 
   require File.dirname(__FILE__) + '/../lib/scraper_utils'
+  require File.dirname(__FILE__) + '/../lib/last_minute_parse'
 end
 
 # Base class for last minute deals scrapers
 class ScraperBase
+  extend LastMinuteParse
 
   # Periodic interval schedule (30 mins)
   UPDATE_SCHEDULE = 1800
@@ -27,8 +29,12 @@ class ScraperBase
   attr_reader :registry
 
   # Initialize and open connection
-  def open_scraper
-    Hpricot(open(@url)) unless @url == nil
+  # open web pages with UTF-8 encoding
+  def open_scraper(url)
+    URI === url ? Nokogiri::HTML::Document.parse(open(url), url.to_s, 'UTF-8') : url
+  rescue OpenURI::HTTPError
+    $stderr.puts "ERROR opening #{url}"
+    Nokogiri('')
   end
 
   # Initialize the scraper with base URL and possible options.

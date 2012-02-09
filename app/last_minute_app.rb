@@ -6,7 +6,6 @@ require 'yaml'
 
 require File.dirname(__FILE__) + '/../lib/lastminute'
 require File.dirname(__FILE__) + '/../lib/scraper_base'
-require File.dirname(__FILE__) + '/../lib/detur_scraper'
 
 $LOG = Logger.new($stdout)
 
@@ -15,7 +14,7 @@ Signal.trap("TERM") do
   $running = false
 end
 
-class App
+class LastMinuteApp
 
   attr_reader :host, :port, :is_authenticated, :db, :db_name
 
@@ -63,7 +62,7 @@ class App
         $LOG.info("#{db_col_name} has #{lastminute_collection.count} documents.")
         lm = LastMinute::Storage::MongoDB.new(db, db_col_name, :seonmoro)
         if lm != nil
-          last_update = Time.at(lm.last_update)
+          last_update = Time.at(lm.fetch_last_update)
           $LOG.info("#{db_col_name} was last updated on #{last_update}")
         end
       end

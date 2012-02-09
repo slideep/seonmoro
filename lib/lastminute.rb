@@ -7,8 +7,6 @@ begin
   require 'gettext'
   require 'digest/md5'
   require 'ostruct'
-
-  require File.dirname(__FILE__) + '/../lib/lastminute_error'
 end
 
 module LastMinute
@@ -32,12 +30,18 @@ module LastMinute
       MAX_TRIES = 5
 
       # Constants for field names
-      COL_ADDED = 'Lisatty'
-      COL_DESTINATION = 'Matkakohde'
-      COL_DEPARTURE_DATE = 'Lahto'
-      COL_DEPARTURE_CITY = 'Lahtopaikka'
-      COL_COST = 'Hinta'
-      COL_DURATION = 'Kesto'
+      COL_SYNCDATE = 'syncdate'
+      COL_ADDED = 'upddate'
+      COL_DESTINATION = 'destination'
+      COL_DESTINATION_COUNTRY = 'destcountry'
+      COL_DESTINATION_CITY = 'destcity'
+      COL_AGENCY = 'agency'
+      COL_DEPARTURE_DATE = 'depdate'
+      COL_DEPARTURE_COUNTRY = 'depcountry'
+      COL_DEPARTURE_CITY = 'depcity'
+      COL_COST = 'price'
+      COL_DURATION = 'duration'
+      COO_RESERVATION_URL = 'url'
 
       attr_accessor :collection_name
       attr_accessor :collection
@@ -48,9 +52,7 @@ module LastMinute
       # @param db_name [Object]
       # @return [Object]
       def connect(host, port = 29287, db_name = "seonmoro")
-        if host == nil
-          raise ArgumentError, 'A hostname has to be provided.'
-        end
+        raise ArgumentError, 'A hostname has to be provided.' if host == nil
         tries = 0
         begin
           tries += 1
@@ -65,38 +67,42 @@ module LastMinute
       # @param db [Object]
       # @param collection_name [Object]
       # @param index_name [Object]
-      def initialize(db, collection_name, index_name = nil)
-        if db == nil
-          raise ArgumentError, 'A database cannot be nil.'
-        end
-        if collection_name.length == 0
-          raise ArgumentError, 'A valid name for the collection has to be provided.'
-        end
+      def initialize(db, collection_name = "seonmoro", index_name = nil)
+        raise ArgumentError, 'A database cannot be nil.' if db == nil
+        raise ArgumentError, 'A valid name for the collection has to be provided.' if collection_name.length == 0
 
         @db = db
         @collection_name = collection_name
         @collection = @db[collection_name]
+        @collection.create_index index_name, :unique => true if index_name != nil
+      end
 
-        previous_sync = last_update
+      def sync_deals
+
+        previous_sync = fetch_last_update
         current_sync = Time.now.to_i
 
-        if previous_sync <= current_sync
-          # TODO: päivitysrutiini tähän => haetaan ensimmäisen dokkarin päiväyksen jälkeiset
-          #@collection.remove
-        end
-
-        if index_name != nil
-          @collection.create_index index_name
+        unless previous_sync.nil?
+          if previous_sync <= current_sync
+            # TODO: päivitysrutiini tähän => haetaan ensimmäisen dokkarin päiväyksen jälkeiset
+            #@collection.remove
+          end
         end
       end
 
       # @return [Time]
-      def last_update
-        updated_on_key = "UpdatedOn"
+      def fetch_last_update
         begin
           doc = @collection.find_one
-          return doc[updated_on_key] if (doc != nil)
+          return doc['syncdate'] if (doc != nil)
         end if @collection != nil
+      end
+
+      # @param deals [Hash]
+      def add_deals(deals)
+        unless deals.nil?
+          deals.each { |deal| @collection.insert(deal, :safe => true) }
+        end
       end
 
       # @param earliest [String]
@@ -105,19 +111,19 @@ module LastMinute
       def find_deals(earliest, cost = nil)
         deals = {}
 
-        response = OpenStruct.new
+        last_minute_deal = OpenStruct.new
         cursor = @collection.find({"Lahto" => {"$gte" => earliest}, "Hinta" => {"$lte" => cost}})
         cursor.each do |doc|
 
-          response.lahto = doc[COL_DEPARTURE_DATE]
-          response.hinta = doc[COL_COST]
-          response.lisatty = doc[COL_ADDED]
-          response.matkakohde = doc[COL_DESTINATION]
-          response.lahtopaikka = doc[COL_DEPARTURE_CITY]
-          response.kesto = doc[COL_DURATION]
-          response.varauslinkki = doc["Varauslinkki"]
+          last_minute_deal.depdate = doc[COL_DEPARTURE_DATE]
+          last_minute_deal.price = doc[COL_COST]
+          last_minute_deal.lisatty = doc[COL_ADDED]
+          last_minute_deal.destination = doc[COL_DESTINATION]
+          last_minute_deal.depcity = doc[COL_DEPARTURE_CITY]
+          last_minute_deal.duration = doc[COL_DURATION]
+          last_minute_deal.url = doc["Varauslinkki"]
 
-          deals << response
+          deals << last_minute_deal
         end
 
         deals

@@ -9,7 +9,7 @@ require 'active_support'
 
 $LOG = Logger.new($stdout)
 
-class CurlWorker
+class LastMinuteWorker
 
   attr_reader = :has_to_cache, :cache_time
   attr_accessor = :cache_store, :feed_urls
@@ -65,20 +65,3 @@ class CurlWorker
   end
 
 end
-
-# TODO: konffausfilusta feedien luku
-feed_urls =
-    {
-        :hispania => 'http://fbook2.hispania.fi/sistaminuten.asp?AgentID',
-        :apollomatkat => 'http://www.apollomatkat.fi/fi/tarjoukset/akkilahdot',
-        :detur => 'http://www.detur.fi/themes/detur/LastMinutedetail.aspx',
-        :aurinkomatkat => 'http://www.aurinkomatkat.fi/akkilahdot/',
-        :tjareborg => 'http://www.tjareborg.fi/akkilahdot/',
-        :finnmatkat => 'http://www.finnmatkat.fi/akkilahdot/',
-        :lomamatkat => 'http://www.lomamatkat.fi/akkilahdot/'
-    }
-
-curl = CurlWorker.new(feed_urls, true)
-
-CurlWorker.parse_feeds(feed_urls)
-CurlWorker.cache_file(__FILE__, 'c:\\tmp', true)

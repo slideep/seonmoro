@@ -37,13 +37,13 @@ class ScraperBaseTest < Test::Unit::TestCase
         end unless env == nil
       end
 
-      @detur_scraper = DeturScraper.new("http://www.detur.fi/themes/detur/LastMinutedetail.aspx")
+      @napsu_scraper = DeturScraper.new("http://www.detur.fi/themes/detur/LastMinutedetail.aspx")
 
     end
   end
 
   def test_scraper_is_registered
-    assert.equal 1, @detur_scraper.registry.count > 0
+    assert.equal 1, @napsu_scraper.registry.count > 0
   end
 
 end

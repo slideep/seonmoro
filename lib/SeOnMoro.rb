@@ -10,9 +10,10 @@ begin
   require 'ostruct'
 
   require File.dirname(__FILE__) + '/../lib/lastminute'
-  require File.dirname(__FILE__) + '/../app/app'
+  require File.dirname(__FILE__) + '/../app/last_minute_app'
   require File.dirname(__FILE__) + '/../lib/scraper_base'
-  require File.dirname(__FILE__) + '/../lib/lastminute_error'
+  require File.dirname(__FILE__) + '/../lib/last_minute_parse'
+
 end
 
 module LastMinute
@@ -33,15 +34,7 @@ module LastMinute
 
     # Ask the LastMinuteBot for last minute deals
     class LastMinuteBot
-
-      # Regex's for parsing user's tweet request
-      PARSE_TRIP_FROM = /^[a-zA-Z]+$/
-      PARSE_TRIP_DATE = /^([123]?([1-3][0-9]){1,2}.\d\d?.?|\d?\d.\d\d?)$/i
-      PARSE_TRIP_DAY_OF_WEEK = /^(ma|ti|ke|to|pe|la|su)-?(ma|ti|ke|to|pe|la|su)*$/i
-      PARSE_TRIP_MONTH = /^(tammi|helmi|maalis|huhti|touko|kesa|heina|elo|syys|loka|marras|joulu)-?(tammi|helmi|maalis|huhti|touko|kesa|heina|elo|syys|loka|marras|joulu)*$/i
-      PARSE_TRIP_DURATION = /^\d*(vkoa|vko|pv)$/i
-      PARSE_TRIP_ADDED = /^(<|>)[\d]*(h|vrk)$/i
-      PARSE_TRIP_COST = /([+-]?[0-9]+)/
+      extend LastMinuteParse
 
       # Set to true to enable debugging (on by default)
       attr_accessor :debug_mode
@@ -95,19 +88,19 @@ module LastMinute
           tweet[:text].strip.split(' ').each do |word|
             case
               when PARSE_TRIP_FROM =~ word
-                response.from = word.slice(0, 3)
+                response.from = $&.slice(0, 3)
               when PARSE_TRIP_DATE =~ word
-                response.earliest = word
+                response.earliest = $&
               when PARSE_TRIP_COST =~ word
-                response.cost = word
+                response.cost = $&
               when PARSE_DAY_OF_WEEK =~ word
-                response.day = word
+                response.day = $&
               when PARSE_MONTH =~ word
-                response.month = word
+                response.month = $&
             end
           end
 
-          @app = App.new
+          @app = LastMinuteApp.new
           unless @app.is_authenticated
             @app.load_configuration
             @app.authenticate(@app.host, @app.port, @app.db_name)
