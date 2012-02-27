@@ -4,6 +4,5 @@
   , "private": true
   , "dependencies": {
       "express": "2.5.4"
-    , "-c": ">= 0.0.1"
   }
 }

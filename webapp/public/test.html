@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>Test page</title>
+		<script type="text/javascript" src="/javascripts/json-template.js"></script>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+			var data = {
+				name:"This_is_my_name"
+			}
+
+			var tmpl = "Data -> {name}";
+			var result = jsontemplate.expand(tmpl, data);
+			alert(result);
+		</script>
+	
+	</body>
+</html>
