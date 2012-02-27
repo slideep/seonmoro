@@ -28,19 +28,23 @@ class ScraperBase
   # Registry for the domain/URL-pairs
   attr_reader :registry
 
+  # Date & time when scraping began
+  attr_reader :start_date
+
+  # Scraped page's number
+  attr_accessor :page_number
+
   # Initialize and open connection
   # open web pages with UTF-8 encoding
   def open_scraper(url)
-    URI === url ? Nokogiri::HTML::Document.parse(open(url), url.to_s, 'UTF-8') : url
-  rescue OpenURI::HTTPError
-    $stderr.puts "ERROR opening #{url}"
-    Nokogiri('')
+    Nokogiri::HTML::Document.parse(open(url), url.to_s, 'UTF-8')
   end
 
   # Initialize the scraper with base URL and possible options.
   # @param url[String]
   def initialize(url)
     @url = url
+    @start_date = Time.now.strftime('%d.%m.%Y')
   end
 
   # Finds a specified scraper for given URL's domain
@@ -59,11 +63,23 @@ class ScraperBase
       @registry ||= {}
       @registry[URI.parse(url).host] = self
     end
-
   end
 
   # Scrape specified URL's document
   def scrape(url)
+  end
+
+  #
+  def results
+
+    results = []
+    1.times.each do |i|
+      @page_number += i
+      @last_minute_deals = self.scrape(create_url @page_number)
+      unless @last_minute_deals.nil? && @last_minute_deals.length > 0
+        @last_minute_deals.each { |deal| results << deal }
+      end
+    end
   end
 
   # Parse given date into dd.MM.YYYY format
@@ -79,7 +95,7 @@ class ScraperBase
   # @param doc [String]
   def parse_links(doc)
     return if doc == nil
-    doc = open_scraper
+    doc = open_scraper(doc)
     unless doc.nil?
       links = doc.search("a[@href]")
       unless links.nil?

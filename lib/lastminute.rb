@@ -138,9 +138,11 @@ module LastMinute
       # Iterates over collection
       # @return [Object]
       def each
-        @collection.find do |cursor|
-          cursor.each do |doc|
-            yield doc
+        unless @collection.nil?
+          @collection.find do |cursor|
+            cursor.each do |doc|
+              yield doc
+            end
           end
         end
       end

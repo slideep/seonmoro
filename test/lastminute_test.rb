@@ -53,7 +53,7 @@
 
       results = []
 
-      40.times.each do |i|
+      1.times.each do |i|
         @page_number += i
 
         @last_minute_deals = @napsu_scraper.scrape(create_url @page_number)

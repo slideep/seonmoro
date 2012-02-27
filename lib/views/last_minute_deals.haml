@@ -1,13 +1,15 @@
 !!! 5
 %html{:lang => "fi"}
   %head
-    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
     %meta{:name => "viewport", :content => "width=device-width, initial-scale=1"}/
     %meta{:name => "format-detection", :content => "telephone=no"}
     %meta{:name => "robots", :content => "noindex"}
     %link{:rel => "stylesheet", :href => "http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css"}/
+    %link{:rel => "stylesheet", :href => "styles.css"}/
+    %link{:rel => "alternate", :type => "application/rss+xml", :title => "SeOnMoro", :href => "/akkilahdot/rss"}/
     %script{:src => "http://code.jquery.com/jquery-1.6.4.min.js"}
-    %script{:src => "http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.js"}
+
     %title SeOnMoro!
   %body
     %div{:data => {:role => "page", :title => "Äkkilähdöt"}}
@@ -21,9 +23,15 @@
           Tämä haku: #{@last_minute_airport}
           %br/
           Päivitetty: #{Time.now}
-        %p
+        %p.item
           Voit etsiä ja järjestää äkkilähtöjä päivämäärän,
           matkakohteen, kohteen pituuden tai hinnan mukaan.
+        %p
+          .search
+            %form{:action => "/akkilahdot/etsi", :method => "get", :name => "searchform"}
+              %input{:name => "last-minute-quick-search", :onclick => "if(!$(this).data('edit')){$(this).val('');$(this).data('edit',true)}", :type => "text", :value => "Etsi matkaa"}/
+              %a{:href => "javascript:document.searchform.submit()"}
+                %span
         #last-minute-filters
           %fieldset{:data => {:role => "controlgroup", :type => "horizontal"}}
             %table.specify-filters{:cellspacing => "0"}
@@ -40,7 +48,7 @@
                   %th
                     %label Matkakohde:
               %tbody
-                %tr
+                %tr.item
                   %td
                     / journey-airport-selector - l&amp;#228;ht&amp;#246;paikkakunta
                     #journey-airport-selector
@@ -51,6 +59,20 @@
                         %option{:value => "kuo"} Kuopio
                         %option{:value => "tre"} Tampere
                         %option{:value => "vaa"} Vaasa
+                        %option{:value => "joe"} Joensuu
+                        %option{:value => "jkl"} Jyväskylä
+                        %option{:value => "kaj"} Kajaani
+                        %option{:value => "kuu"} Kuusamo
+                        %option{:value => "kmi"} Kemi
+                        %option{:value => "kok"} Kokkola
+                        %option{:value => "kit"} Kittilä
+                        %option{:value => "lap"} Lappeenranta
+                        %option{:value => "por"} Pori
+                        %option{:value => "roi"} Rovaniemi
+                        %option{:value => "sei"} Seinäjoki
+                        %option{:value => "sav"} Savonlinna
+                        %option{:value => "var"} Varkaus
+
                   %td
                     / journey-sortby-selector - lajittelukriteeri
                     #journey-sortby-selector
