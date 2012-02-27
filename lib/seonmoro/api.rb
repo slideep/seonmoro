@@ -1,6 +1,6 @@
 module LastMinute
 
-  # This module provides the core implementation of the Clickatell HTTP service.
+  # This module provides the core implementation of the SeOnMoro HTTP service.
   class API
     attr_accessor :auth_options
 
