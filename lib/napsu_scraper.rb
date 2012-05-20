@@ -24,7 +24,7 @@ class NapsuScraper < ScraperBase
   PARSE_TRIP_COST = /([+-]?[0-9]+)/i
 
   #
-  CSS_SELECTOR = "div#akkilahdotcontainer div#resultscontainer table tr[class=/"#{classname}/"]"
+  CSS_SELECTOR = "div#akkilahdotcontainer div#resultscontainer table tr[class=/" #{classname}/"]"
 
   def initialize(url)
     begin
@@ -49,7 +49,9 @@ class NapsuScraper < ScraperBase
 
       unless scraper_document.nil?
         {:odd => "odd", :even => "even"}.each_pair do |classkey, classname|
-          scraper_document.css(CSS_SELECTOR).collect do |row|
+
+          scraper_document.css("div#akkilahdotcontainer div#resultscontainer table tr[class=\"#{classname}\"]").collect do |row|
+
 
             last_minute_deal = OpenStruct.new
 
