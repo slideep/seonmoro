@@ -18,5 +18,8 @@ httpd = WEBrick::HTTPProxyServer.new(
     :ProxyURI => upstream_proxy
 )
 
-Signal.trap(:INT){ httpd.shutdown }
+Signal.trap(:INT) do
+  httpd.shutdown
+end
+
 httpd.start
