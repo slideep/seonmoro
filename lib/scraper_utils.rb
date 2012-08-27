@@ -1,3 +1,4 @@
+require "uri/common"
 require "pathname"
 
 class ScraperUtils
