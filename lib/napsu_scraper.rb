@@ -4,13 +4,27 @@ begin
   require 'date'
   require 'net/http'
   require 'uri'
-  require 'hpricot'
+  require 'nokogiri'
   require 'open-uri'
+  require 'ostruct'
 
   require File.dirname(__FILE__) + '/../lib/scraper_base'
+  require File.dirname(__FILE__) + '/../lib/last_minute_parse'
 end
 
 class NapsuScraper < ScraperBase
+
+  # Regex's for parsing request (either scraping or tweet)
+  PARSE_TRIP_FROM = /^[a-zA-Z]+$/
+  PARSE_TRIP_DATE = /^([123]?([1-3][0-9]){1,2}.\d\d?.?|\d?\d.\d\d?)$/i
+  PARSE_TRIP_DAY_OF_WEEK = /^(ma|ti|ke|to|pe|la|su)-?(ma|ti|ke|to|pe|la|su)*$/i
+  PARSE_TRIP_MONTH = /^(tammi|helmi|maalis|huhti|touko|kesa|heina|elo|syys|loka|marras|joulu)-?(tammi|helmi|maalis|huhti|touko|kesa|heina|elo|syys|loka|marras|joulu)*$/i
+  PARSE_TRIP_DURATION = /^\d*(vkoa|vko|pv)$/i
+  PARSE_TRIP_ADDED = /^(<|>) [\d]*(h|vrk)$/i
+  PARSE_TRIP_COST = /([+-]?[0-9]+)/i
+
+  #
+  CSS_SELECTOR = "div#akkilahdotcontainer div#resultscontainer table tr[class=/" #{classname}/"]"
 
   def initialize(url)
     begin
@@ -22,85 +36,64 @@ class NapsuScraper < ScraperBase
     end
   end
 
+  # @return [Array]
   def scrape(url)
     raise ArgumentError, t('scraper_url_missing') if url == nil
     begin
+
+      last_minute_deals = []
+
       register_scraper(url) unless (url =~ URI::regexp).nil?
-      doc = open_scraper
-      unless doc.nil?
-        rows = []
 
-        # skip 1st row
-        curr_row_index = 0
+      scraper_document = open_scraper(url)
 
-        (doc/"table//tr").each do |row|
+      unless scraper_document.nil?
+        {:odd => "odd", :even => "even"}.each_pair do |classkey, classname|
 
-          curr_row_index += 1
-          if curr_row_index == 1 && row[:id] == "tableheaders"
-            break
+          scraper_document.css("div#akkilahdotcontainer div#resultscontainer table tr[class=\"#{classname}\"]").collect do |row|
+
+
+            last_minute_deal = OpenStruct.new
+
+            # Synkattu
+            last_minute_deal.syncdate = Time.now.to_i
+
+            # Lisätty
+            last_minute_deal.upddate = row.at("td[1]").text.strip
+
+            # Lähtö
+            last_minute_deal.depdate = row.at("td[2]").text.strip
+
+            # Matkanjärjestäjä
+            last_minute_deal.agency = row.at("td[3]").text.strip
+
+            # Matkakohde
+            destination = row.at("td[4]").text.strip.split(',')
+
+            # Matkakohde
+            last_minute_deal.destcity = destination[0]
+
+            # Matkakohteen maa
+            last_minute_deal.destcountry = destination[1]
+
+            # Lähtöpaikka
+            last_minute_deal.depcity = row.at("td[5]").text.strip
+
+            # Hinta
+            last_minute_deal.price = row.at("td[7]").text.strip
+
+            # Kesto
+            last_minute_deal.duration = row.at("td[8]").text.strip
+
+            # Varauslinkki
+            last_minute_deal.url = "http://" << URI.parse(url).host << row.at("td[9] a")[:href].strip
+
+            last_minute_deals << last_minute_deal
           end
-
-          cells = []
-
-          # skip 6th cell
-          curr_cell_index = 0
-
-
-          (row/"td").each do |cell|
-            if (cell/"").length > 0
-
-              curr_cell_index += 1
-              if curr_cell_index == 6
-                break
-              end
-
-              cell_inner_text = (cell).inner_text.chomp
-
-              # Lisätty
-              if cell_inner_text =~ /^(<|>) [\d]*(h|vrk)$/i
-
-              end
-
-              # Lähtö
-              if cell_inner_text =~ /^\d\d.\d\d.$/i
-
-              end
-
-              # Kesto
-              if cell_inner_text =~ /^\d* (vkoa|vko|pv)$/i
-
-              end
-
-                values = (cell).inner_html.split('<br />').collect do |str|
-                pair = str.strip.split('=').collect { |val| val.strip }
-                Hash[pair[0], pair[1]]
-              end
-
-              values.length == 1 ? cells << cell.inner_text : cells << values
-
-            elsif cells << cell.inner_text
-            end
-          end
-
-          rows << cells
         end
       end
+
+      last_minute_deals
     end
   end
 end
-
-
-# test
-def test_scrape(start_date)
-  485.times do |page_number|
-    page_number += 1
-    napsu_url = "http://www.napsu.fi/Includefiles/Matkailu/akkilahdot2.php?sd=#{start_date}as=2&order=pvm&ascdesc=asc&p=#{page_number}"
-    napsu = NapsuScraper.new(napsu_url)
-    napsu.scrape(napsu_url)
-  end
-end
-
-start_date = Time.now.strftime('%d.%m.%Y')
-test_scrape(start_date)
-
-

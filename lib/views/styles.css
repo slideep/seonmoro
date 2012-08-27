@@ -1,0 +1,18 @@
+.search {
+    background: url("bg.png") repeat-x scroll 0 0 transparent;
+    border-radius: 4px 4px 4px 4px;
+    color: #ffffff;
+    font-size: 10px;
+    height: 174px;
+    position: relative;
+    text-align: center;
+    width: 238px;
+}
+
+.item {
+    background: none repeat scroll 0 0 white;
+    border: 1px solid #D6D6D6;
+    border-radius: 4px 4px 4px 4px;
+    line-height: 20px;
+    margin: 2px 0 8px;
+}
