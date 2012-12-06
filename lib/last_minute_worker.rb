@@ -21,7 +21,7 @@ class LastMinuteWorker
   end
 
   def load_config_file(config_file)
-    if !File.readable?(config_file)
+    unless File.readable?(config_file)
       abort "Can not find config file at #{config_file}"
     end
 
@@ -34,7 +34,7 @@ class LastMinuteWorker
         with_logging(feed_url) do
           feed = CURL.new({:has_to_cache => true})
           feed.save(feed_url, to_filename(feed_name))
-        end if feed_url.start_with?("http")
+        end if feed_url.start_with?('http')
       end
     end
   end

@@ -5,14 +5,17 @@ require 'sass'
 
 use Rack::Session::Pool, :expire_after => 2592000
 
-MUNICIPALITY_KEY = "municipality"
+DB_HOST = 'ds029287.mongolab.com'
+DB_PORT = 29287
+DB_NAME = 'seonmoro'
+DB_COL_NAME = 'seonmoro'
 
+MUNICIPALITY_KEY = 'municipality'
 AIRPORT_TYPE_KEY = "type"
 AIRPORT_TYPE_LARGE_KEY = "large_airport"
 AIRPORT_TYPE_MEDIUM_KEY = "medium_airport"
 AIRPORT_ORIGIN_CITY = "Lahtopaikka"
 AIRPORT_ORIGIN_COUNTRY = "iso_country"
-
 COUNTRY_CODE = "code"
 
 configure do

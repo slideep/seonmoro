@@ -10,9 +10,7 @@ require File.dirname(__FILE__) + '/../lib/scraper_base'
 $LOG = Logger.new($stdout)
 
 $running = true
-Signal.trap("TERM") do
-  $running = false
-end
+Signal.trap('TERM') { $running = false }
 
 class LastMinuteApp
 
@@ -51,7 +49,7 @@ class LastMinuteApp
   def authenticate(host, port, db_name)
     @db = Mongo::Connection.new(host, port).db(db_name)
     if @db != nil
-      @is_authenticated = @db.authenticate("seonmoro", "seonmoro")
+      @is_authenticated = @db.authenticate('seonmoro', 'seonmoro')
     end
   end
 

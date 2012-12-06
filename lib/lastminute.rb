@@ -10,7 +10,7 @@ begin
 end
 
 module LastMinute
-  VERSION = "0.0.1"
+  VERSION = '0.0.1'
   module Storage
     attr_reader :conn_created
 
@@ -41,7 +41,7 @@ module LastMinute
       COL_DEPARTURE_CITY = 'depcity'
       COL_COST = 'price'
       COL_DURATION = 'duration'
-      COO_RESERVATION_URL = 'url'
+      COL_RESERVATION_URL = 'url'
 
       attr_accessor :collection_name
       attr_accessor :collection
@@ -51,7 +51,7 @@ module LastMinute
       # @param port [Object]
       # @param db_name [Object]
       # @return [Object]
-      def connect(host, port = 29287, db_name = "seonmoro")
+      def connect(host, port = 29287, db_name = 'seonmoro')
         raise ArgumentError, 'A hostname has to be provided.' if host == nil
         tries = 0
         begin
@@ -67,7 +67,7 @@ module LastMinute
       # @param db [Object]
       # @param collection_name [Object]
       # @param index_name [Object]
-      def initialize(db, collection_name = "seonmoro", index_name = nil)
+      def initialize(db, collection_name = 'seonmoro', index_name = nil)
         raise ArgumentError, 'A database cannot be nil.' if db == nil
         raise ArgumentError, 'A valid name for the collection has to be provided.' if collection_name.length == 0
 
@@ -78,10 +78,8 @@ module LastMinute
       end
 
       def sync_deals
-
         previous_sync = fetch_last_update
         current_sync = Time.now.to_i
-
         unless previous_sync.nil?
           if previous_sync <= current_sync
             # TODO: päivitysrutiini tähän => haetaan ensimmäisen dokkarin päiväyksen jälkeiset
@@ -94,7 +92,7 @@ module LastMinute
       def fetch_last_update
         begin
           doc = @collection.find_one
-          return doc['syncdate'] if (doc != nil)
+          return doc[COL_SYNCDATE] if (doc != nil)
         end if @collection != nil
       end
 
@@ -112,17 +110,20 @@ module LastMinute
         deals = {}
 
         last_minute_deal = OpenStruct.new
-        cursor = @collection.find({"Lahto" => {"$gte" => earliest}, "Hinta" => {"$lte" => cost}})
-        cursor.each do |doc|
 
+        cursor = @collection.find({COL_DEPARTURE_DATE => {"$gte" => earliest}, COL_COST => {"$lte" => cost}})
+        cursor.each do |doc|
+          last_minute_deal.syncdate = doc[COL_SYNCDATE]
+          last_minute_deal.upddate = doc[COL_ADDED]
           last_minute_deal.depdate = doc[COL_DEPARTURE_DATE]
+          last_minute_deal.agency = doc[COL_AGENCY]
           last_minute_deal.price = doc[COL_COST]
-          last_minute_deal.lisatty = doc[COL_ADDED]
           last_minute_deal.destination = doc[COL_DESTINATION]
+          last_minute_deal.destcity = doc[COL_DESTINATION_CITY]
+          Last_minute_deal.destcountry = doc[COL_DESTINATION_COUNTRY]
           last_minute_deal.depcity = doc[COL_DEPARTURE_CITY]
           last_minute_deal.duration = doc[COL_DURATION]
-          last_minute_deal.url = doc["Varauslinkki"]
-
+          last_minute_deal.url = doc[COL_RESERVATION_URL]
           deals << last_minute_deal
         end
 

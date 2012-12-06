@@ -9,16 +9,16 @@
   
   class LastMinuteTest < Test::Unit::TestCase
 
-    DB_HOST = "ds029287.mongolab.com"
+    DB_HOST = 'ds029287.mongolab.com'
     DB_PORT = 29287
-    DB_NAME = "seonmoro"
-    DB_COL_NAME = "seonmoro"
+    DB_NAME = 'seonmoro'
+    DB_COL_NAME = 'seonmoro'
     
     # Setup - create a new connection and initializes an instance
     def setup
       @page_number = 1
       @start_date = Time.now.strftime('%d.%m.%Y')
-      @napsu_url = "http://www.napsu.fi/Includefiles/Matkailu/akkilahdot2.php?sd=#{@start_date}as=2&order=pvm&ascdesc=asc&p=#{@page_number}"
+      @napsu_url = "http://www.napsu.fi/Includefiles/Matkailu/akkilahdot2.php?sd=#@start_dateas=2&order=pvm&ascdesc=asc&p=#{@page_number}"
 
       @db = Mongo::Connection.new(DB_HOST, DB_PORT).db(DB_NAME)
       is_authenticated = @db.authenticate(DB_NAME, DB_NAME)
@@ -56,18 +56,18 @@
       1.times.each do |i|
         @page_number += i
 
-        @last_minute_deals = @napsu_scraper.scrape(create_url @page_number)
+        @last_minute_deals = @napsu_scraper.scrape(create_url (@page_number))
         unless @last_minute_deals.nil? && @last_minute_deals.length > 0
           @last_minute_deals.each { |deal| results << deal }
         end
 
       end
 
-      assert_equal 20, results.length
-
+      assert_equal 30, results.length
     end
 
-    def create_url page_number
-      "http://www.napsu.fi/Includefiles/Matkailu/akkilahdot2.php?sd=#{@start_date}as=2&order=pvm&ascdesc=asc&p=#{page_number}"
+    #
+    def create_url(page_number)
+      "http://www.napsu.fi/Includefiles/Matkailu/akkilahdot2.php?sd=#@start_dateas=2&order=pvm&ascdesc=asc&p=#{page_number}"
     end
   end

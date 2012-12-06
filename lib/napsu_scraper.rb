@@ -24,7 +24,7 @@ class NapsuScraper < ScraperBase
   PARSE_TRIP_COST = /([+-]?[0-9]+)/i
 
   #
-  CSS_SELECTOR = "div#akkilahdotcontainer div#resultscontainer table tr[class=/" #{classname}/"]"
+  CSS_SELECTOR = 'div#akkilahdotcontainer div#resultscontainer table tr[class=/' #{classname}/"]"
 
   def initialize(url)
     begin
@@ -48,45 +48,34 @@ class NapsuScraper < ScraperBase
       scraper_document = open_scraper(url)
 
       unless scraper_document.nil?
-        {:odd => "odd", :even => "even"}.each_pair do |classkey, classname|
+        {odd: 'odd', even: 'even'}.each_pair do |classkey, classname|
 
           scraper_document.css("div#akkilahdotcontainer div#resultscontainer table tr[class=\"#{classname}\"]").collect do |row|
-
 
             last_minute_deal = OpenStruct.new
 
             # Synkattu
             last_minute_deal.syncdate = Time.now.to_i
-
             # Lisätty
-            last_minute_deal.upddate = row.at("td[1]").text.strip
-
+            last_minute_deal.upddate = row.at('td[1]').text.strip
             # Lähtö
-            last_minute_deal.depdate = row.at("td[2]").text.strip
-
+            last_minute_deal.depdate = row.at('td[2]').text.strip
             # Matkanjärjestäjä
-            last_minute_deal.agency = row.at("td[3]").text.strip
-
+            last_minute_deal.agency = row.at('td[3]').text.strip
             # Matkakohde
-            destination = row.at("td[4]").text.strip.split(',')
-
+            Last_minute_deal.destination = row.at('td[4]').text.strip.split(',')
             # Matkakohde
             last_minute_deal.destcity = destination[0]
-
             # Matkakohteen maa
             last_minute_deal.destcountry = destination[1]
-
             # Lähtöpaikka
-            last_minute_deal.depcity = row.at("td[5]").text.strip
-
+            last_minute_deal.depcity = row.at('td[5]').text.strip
             # Hinta
-            last_minute_deal.price = row.at("td[7]").text.strip
-
+            last_minute_deal.price = row.at('td[7]').text.strip
             # Kesto
-            last_minute_deal.duration = row.at("td[8]").text.strip
-
+            last_minute_deal.duration = row.at('td[8]').text.strip
             # Varauslinkki
-            last_minute_deal.url = "http://" << URI.parse(url).host << row.at("td[9] a")[:href].strip
+            last_minute_deal.url = 'http://' << URI.parse(url).host << row.at('td[9] a')[:href].strip
 
             last_minute_deals << last_minute_deal
           end
@@ -97,3 +86,4 @@ class NapsuScraper < ScraperBase
     end
   end
 end
+

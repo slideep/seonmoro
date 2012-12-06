@@ -3,11 +3,7 @@ require "pathname"
 
 class ScraperUtils
 
-  if RUBY_PLATFORM =~ /mswin/
-    PATH_SPLIT_RE = /[\/\\]/
-  else
-    PATH_SPLIT_RE = /\//
-  end
+  RUBY_PLATFORM =~ /mswin/ ? PATH_SPLIT_RE = /[\/\\]/ : PATH_SPLIT_RE = /\//
 
   def self.path_to_uri(file_path)
     unless file_path.nil?
